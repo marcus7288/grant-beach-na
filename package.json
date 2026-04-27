@@ -1,0 +1,8 @@
+{
+  "name": "grant-beach-na-events",
+  "version": "1.0.0",
+  "description": "Grant Beach Neighborhood Association – Community Events Site",
+  "dependencies": {
+    "@netlify/blobs": "^8.1.0"
+  }
+}

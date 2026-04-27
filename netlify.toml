@@ -1,0 +1,24 @@
+[build]
+  publish = "."
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Route /api/* to Netlify Functions
+[[redirects]]
+  from = "/api/events"
+  to = "/.netlify/functions/get-events"
+  status = 200
+
+[[redirects]]
+  from = "/api/update-events"
+  to = "/.netlify/functions/update-events"
+  status = 200
+
+# Keep admin page accessible
+[[headers]]
+  for = "/admin.html"
+  [headers.values]
+    X-Frame-Options = "DENY"
+    X-Content-Type-Options = "nosniff"
