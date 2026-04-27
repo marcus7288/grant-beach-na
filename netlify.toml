@@ -16,6 +16,16 @@
   to = "/.netlify/functions/update-events"
   status = 200
 
+[[redirects]]
+  from = "/api/config"
+  to = "/.netlify/functions/get-config"
+  status = 200
+
+[[redirects]]
+  from = "/api/update-config"
+  to = "/.netlify/functions/update-config"
+  status = 200
+
 # Keep admin page accessible
 [[headers]]
   for = "/admin.html"
