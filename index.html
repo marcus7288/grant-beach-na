@@ -27,16 +27,28 @@
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
+    /* ── Theme Variables (overridden at runtime by applyColors) ── */
+    :root {
+      --gb-primary:    #2e6b35;
+      --gb-primary-bg: color-mix(in srgb, var(--gb-primary) 8%, white);
+      --gb-primary-bd: color-mix(in srgb, var(--gb-primary) 18%, white);
+      --gb-primary-lt: color-mix(in srgb, var(--gb-primary) 55%, white);
+      --gb-text-dark:  #2d3a2e;
+    }
+
     body {
       font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-      background: #f4f7f2;
-      color: #2d3a2e;
+      background: color-mix(in srgb, var(--gb-primary) 4%, #f5f5f5);
+      color: var(--gb-text-dark);
       min-height: 100vh;
     }
 
     /* ── Header ── */
     .gb-header {
-      background: linear-gradient(135deg, #2e6b35 0%, #3d8c45 60%, #56a65f 100%);
+      background: linear-gradient(135deg,
+        var(--gb-primary) 0%,
+        color-mix(in srgb, var(--gb-primary) 75%, white) 60%,
+        color-mix(in srgb, var(--gb-primary) 55%, white) 100%);
       color: #fff;
       padding: 2rem 1.5rem 1.5rem;
       text-align: center;
@@ -48,16 +60,12 @@
     .gb-wrap { max-width: 960px; margin: 0 auto; padding: 1.5rem 1rem 3rem; }
 
     /* ── Loading ── */
-    .gb-loading {
-      text-align: center;
-      padding: 3rem 1rem;
-      color: #6b8c6e;
-    }
+    .gb-loading { text-align: center; padding: 3rem 1rem; color: var(--gb-primary-lt); }
     .gb-spinner {
       display: inline-block;
       width: 32px; height: 32px;
-      border: 3px solid #d4e2d5;
-      border-top-color: #2e6b35;
+      border: 3px solid var(--gb-primary-bd);
+      border-top-color: var(--gb-primary);
       border-radius: 50%;
       animation: spin .7s linear infinite;
       margin-bottom: .75rem;
@@ -74,7 +82,7 @@
     .gb-cal-nav {
       display: flex; align-items: center; justify-content: space-between;
       padding: .85rem 1.25rem;
-      background: #2e6b35; color: #fff;
+      background: var(--gb-primary); color: #fff;
     }
     .gb-cal-nav h2 { font-size: 1.05rem; font-weight: 600; }
     .gb-cal-nav button {
@@ -88,20 +96,20 @@
     .gb-cal-dow {
       padding: .5rem 0; text-align: center; font-size: .72rem;
       font-weight: 700; letter-spacing: .05em; text-transform: uppercase;
-      color: #6b8c6e; background: #f0f5f0;
+      color: var(--gb-primary-lt); background: var(--gb-primary-bg);
     }
     .gb-cal-day {
       min-height: 72px; padding: .4rem .35rem .3rem;
-      border-top: 1px solid #e8eee8; border-right: 1px solid #e8eee8;
+      border-top: 1px solid var(--gb-primary-bd); border-right: 1px solid var(--gb-primary-bd);
       position: relative;
     }
     .gb-cal-day:nth-child(7n) { border-right: none; }
     .gb-cal-day.other-month { background: #fafbfa; }
     .gb-cal-day.other-month .gb-day-num { color: #c0c8c0; }
-    .gb-cal-day.today { background: #eef7ef; }
-    .gb-day-num { font-size: .8rem; font-weight: 600; color: #4a6b4c; line-height: 1; }
+    .gb-cal-day.today { background: var(--gb-primary-bg); }
+    .gb-day-num { font-size: .8rem; font-weight: 600; color: var(--gb-primary-lt); line-height: 1; }
     .gb-cal-day.today .gb-day-num {
-      background: #2e6b35; color: #fff; width: 22px; height: 22px;
+      background: var(--gb-primary); color: #fff; width: 22px; height: 22px;
       border-radius: 50%; display: flex; align-items: center; justify-content: center;
     }
     .gb-cal-dots { display: flex; flex-wrap: wrap; gap: 2px; margin-top: 4px; }
@@ -120,54 +128,65 @@
     .gb-list-section { background: #fff; border-radius: 12px; box-shadow: 0 2px 12px rgba(0,0,0,.07); overflow: hidden; }
     .gb-list-header {
       display: flex; align-items: center; justify-content: space-between;
-      padding: .85rem 1.25rem; background: #2e6b35; color: #fff;
+      padding: .85rem 1.25rem; background: var(--gb-primary); color: #fff;
     }
     .gb-list-header h2 { font-size: 1.05rem; font-weight: 600; }
     .gb-filter-bar {
       display: flex; flex-wrap: wrap; gap: .5rem;
-      padding: .85rem 1.25rem; border-bottom: 1px solid #e8eee8; background: #f8faf8;
+      padding: .85rem 1.25rem; border-bottom: 1px solid var(--gb-primary-bd);
+      background: color-mix(in srgb, var(--gb-primary) 3%, white);
     }
     .gb-filter-btn {
-      padding: .3rem .75rem; border-radius: 99px; border: 1.5px solid #c8d8c9;
-      background: #fff; color: #4a6b4c; font-size: .8rem; cursor: pointer; transition: all .15s;
+      padding: .3rem .75rem; border-radius: 99px;
+      border: 1.5px solid var(--gb-primary-bd);
+      background: #fff; color: var(--gb-primary-lt); font-size: .8rem; cursor: pointer; transition: all .15s;
     }
-    .gb-filter-btn.active, .gb-filter-btn:hover { background: #2e6b35; color: #fff; border-color: #2e6b35; }
+    .gb-filter-btn.active, .gb-filter-btn:hover {
+      background: var(--gb-primary); color: #fff; border-color: var(--gb-primary);
+    }
     .gb-events-list { padding: 0 1.25rem 1.25rem; }
     .gb-event-group-label {
       font-size: .72rem; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
-      color: #7a9c7c; margin: 1.1rem 0 .5rem; padding-bottom: .25rem; border-bottom: 1px solid #e8eee8;
+      color: var(--gb-primary-lt); margin: 1.1rem 0 .5rem;
+      padding-bottom: .25rem; border-bottom: 1px solid var(--gb-primary-bd);
     }
     .gb-event-card {
       display: flex; gap: 1rem; padding: .85rem 0;
-      border-bottom: 1px solid #f0f5f0; align-items: flex-start;
+      border-bottom: 1px solid var(--gb-primary-bg); align-items: flex-start;
     }
     .gb-event-card:last-child { border-bottom: none; }
     .gb-event-date-badge {
       flex-shrink: 0; width: 50px; text-align: center;
-      background: #f0f5f0; border-radius: 8px; padding: .4rem .2rem;
+      background: var(--gb-primary-bg); border-radius: 8px; padding: .4rem .2rem;
     }
-    .gb-event-date-badge .badge-month { font-size: .65rem; font-weight: 700; text-transform: uppercase; color: #2e6b35; letter-spacing: .06em; }
-    .gb-event-date-badge .badge-day   { font-size: 1.4rem; font-weight: 800; color: #2d3a2e; line-height: 1.1; }
-    .gb-event-date-badge .badge-dow   { font-size: .6rem; color: #7a9c7c; text-transform: uppercase; }
+    .gb-event-date-badge .badge-month {
+      font-size: .65rem; font-weight: 700; text-transform: uppercase;
+      color: var(--gb-primary); letter-spacing: .06em;
+    }
+    .gb-event-date-badge .badge-day { font-size: 1.4rem; font-weight: 800; color: var(--gb-text-dark); line-height: 1.1; }
+    .gb-event-date-badge .badge-dow { font-size: .6rem; color: var(--gb-primary-lt); text-transform: uppercase; }
     .gb-event-body { flex: 1; min-width: 0; }
     .gb-event-title {
-      font-size: .95rem; font-weight: 700; color: #1e3320;
+      font-size: .95rem; font-weight: 700;
+      color: color-mix(in srgb, var(--gb-primary) 90%, black);
       display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
     }
     .gb-cat-badge { font-size: .65rem; padding: 2px 7px; border-radius: 99px; color: #fff; font-weight: 600; }
-    .gb-event-meta { font-size: .8rem; color: #5a7c5c; margin-top: .2rem; }
+    .gb-event-meta { font-size: .8rem; color: var(--gb-primary-lt); margin-top: .2rem; }
     .gb-event-desc { font-size: .83rem; color: #556655; margin-top: .3rem; line-height: 1.5; }
     .gb-event-link {
       display: inline-block; margin-top: .45rem; font-size: .78rem;
-      color: #2e6b35; font-weight: 600; text-decoration: none;
-      border: 1.5px solid #2e6b35; padding: .2rem .6rem; border-radius: 99px; transition: all .15s;
+      color: var(--gb-primary); font-weight: 600; text-decoration: none;
+      border: 1.5px solid var(--gb-primary); padding: .2rem .6rem; border-radius: 99px; transition: all .15s;
     }
-    .gb-event-link:hover { background: #2e6b35; color: #fff; }
-    .gb-no-events { text-align: center; padding: 2.5rem 1rem; color: #7a9c7c; font-size: .9rem; }
+    .gb-event-link:hover { background: var(--gb-primary); color: #fff; }
+    .gb-no-events { text-align: center; padding: 2.5rem 1rem; color: var(--gb-primary-lt); font-size: .9rem; }
 
     /* ── Tooltip ── */
     .gb-tooltip {
-      position: fixed; z-index: 9999; background: #1e3320; color: #fff;
+      position: fixed; z-index: 9999;
+      background: color-mix(in srgb, var(--gb-primary) 90%, black);
+      color: #fff;
       border-radius: 8px; padding: .6rem .9rem; font-size: .8rem; max-width: 220px;
       box-shadow: 0 4px 16px rgba(0,0,0,.25); pointer-events: none; display: none;
     }
@@ -175,7 +194,7 @@
     .gb-tooltip strong { display: block; font-size: .85rem; }
 
     /* ── Footer ── */
-    .gb-footer { text-align: center; padding: 1rem; font-size: .75rem; color: #8aaa8c; }
+    .gb-footer { text-align: center; padding: 1rem; font-size: .75rem; color: var(--gb-primary-lt); }
 
     @media (max-width: 500px) {
       .gb-cal-day  { min-height: 52px; }
@@ -225,7 +244,8 @@
 
 <script>
 // ── Config ──────────────────────────────────────────────────────────────
-const API_URL = "/api/events";
+const API_URL        = "/api/events";
+const API_CONFIG_URL = "/api/config";
 
 const CATEGORIES = {
   meeting: { label: "Meeting",     color: "#2e6b35" },
@@ -235,6 +255,33 @@ const CATEGORIES = {
   kids:    { label: "Kids/Family", color: "#8e44ad" },
   other:   { label: "Other",       color: "#7f8c8d" },
 };
+
+// ── Apply saved color theme ────────────────────────────────────────────
+function applyColors(config) {
+  if (!config) return;
+  const root = document.documentElement;
+
+  if (config.primaryColor) {
+    root.style.setProperty("--gb-primary", config.primaryColor);
+  }
+
+  if (config.categoryColors) {
+    for (const [cat, color] of Object.entries(config.categoryColors)) {
+      if (CATEGORIES[cat]) {
+        CATEGORIES[cat].color = color;
+      }
+    }
+  }
+}
+
+async function fetchConfig() {
+  try {
+    const res = await fetch(API_CONFIG_URL + "?t=" + Date.now());
+    if (res.ok) applyColors(await res.json());
+  } catch (err) {
+    console.warn("Could not load color config:", err);
+  }
+}
 
 const MONTHS       = ["January","February","March","April","May","June","July","August","September","October","November","December"];
 const SHORT_MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
@@ -429,16 +476,20 @@ document.getElementById("nextMonth").addEventListener("click", () => {
   renderCalendar();
 });
 
-// ── Init: Fetch events from API ───────────────────────────────────────────
+// ── Init: Fetch config + events in parallel ───────────────────────────
 async function init() {
-  try {
-    const res = await fetch(API_URL + "?t=" + Date.now());
-    if (!res.ok) throw new Error("HTTP " + res.status);
-    EVENTS = await res.json();
-  } catch (err) {
-    console.warn("Could not load events from API:", err);
-    EVENTS = [];
+  // Fetch theme config and events simultaneously
+  const [, eventsResult] = await Promise.allSettled([
+    fetchConfig(),
+    fetch(API_URL + "?t=" + Date.now())
+      .then(r => { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+  ]);
+
+  EVENTS = eventsResult.status === "fulfilled" ? eventsResult.value : [];
+  if (eventsResult.status === "rejected") {
+    console.warn("Could not load events:", eventsResult.reason);
   }
+
   renderLegend();
   renderCalendar();
   renderFilterBar();
